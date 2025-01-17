@@ -1,0 +1,3 @@
+[submodule "KAP140_LCD/template/CommunityTemplate"]
+	path = KAP140_LCD/template/CommunityTemplate
+	url = https://github.com/MobiFlight/CommunityTemplate.git

@@ -94,16 +94,19 @@ double _amps = 0.0;
 
 void CC172EngineGauges::begin()
 {
-    // cmdMessenger.sendCmd(kDebug, F("Starting CC172EngineGauges"));
 
     lcd.init();
     lcd.setRotation(2);
     lcd.fillScreen(GAUGE_BACKGROUND_COLOR);
-//     lcd.setBrightness(0);  // This doesn't work :-( I'm not sure if we can turn off the backlight or control brightness.
+    
+    lcd.setBrightness(255);  // This doesn't work :-( I'm not sure if we can turn off the backlight or control brightness.
 
     lcd.setColorDepth(16);
     lcd.setTextColor(TFT_WHITE, TFT_BLACK);
     lcd.setTextSize(10);
+
+
+
 
     canvas.createSprite(228, 228);
 
@@ -128,6 +131,8 @@ void CC172EngineGauges::begin()
     vacAmpBase.setBuffer     (const_cast<std::uint16_t*>(VACAMPBASE_IMG_DATA), VACAMPBASE_IMG_WIDTH, VACAMPBASE_IMG_HEIGHT, 16);
     vacAmpLeftMask.setBuffer (const_cast<std::uint16_t*>(VACAMPLEFTMASK_IMG_DATA), VACAMPLEFTMASK_IMG_WIDTH, VACAMPLEFTMASK_IMG_HEIGHT, 16);
     vacAmpRightMask.setBuffer(const_cast<std::uint16_t*>(VACAMPRIGHTMASK_IMG_DATA), VACAMPRIGHTMASK_IMG_WIDTH, VACAMPRIGHTMASK_IMG_HEIGHT, 16);
+
+    
 
 }
 
@@ -194,6 +199,7 @@ void CC172EngineGauges::set(int16_t messageID, char *setPoint)
         if (setPoint != nullptr && strlen(setPoint)> 0 && isValidNumber(setPoint)) {
             _leftFuel = atof(setPoint);
         } 
+        // lcd.setBrightness(atoi(setPoint));  
         break;
     case 1:
         if (setPoint != nullptr && strlen(setPoint)> 0 && isValidNumber(setPoint)) {

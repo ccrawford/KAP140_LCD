@@ -53,8 +53,8 @@ RotaryHandler *Encoders[NUM_ENCODERS];
 // define encoders  (name, pin pair for A and B pins)
 Encoder ENC_FMS_INNER(49, 48);
 Encoder ENC_FMS_OUTER(47, 46);
-Encoder ENC_COM_OUTER(53, 52);
-Encoder ENC_COM_INNER(50, 51);
+Encoder ENC_COM_OUTER(52, 53);
+Encoder ENC_COM_INNER(51, 50);
 Encoder ENC_NAV_VOL(9, 8);
 Encoder ENC_COM_VOL(6, 7);
 

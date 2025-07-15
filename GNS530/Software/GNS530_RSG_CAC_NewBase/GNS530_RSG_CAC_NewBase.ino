@@ -42,7 +42,7 @@ public:
 
 
 // define number of buttons
-#define NUM_BUTTONS 16 //total number of buttons (not on muxes)
+#define NUM_BUTTONS 18 //total number of buttons (not on muxes)
 Button Buttons[NUM_BUTTONS];
 
 
@@ -52,8 +52,8 @@ RotaryHandler *Encoders[NUM_ENCODERS];
 
 // define encoders  (name, pin pair for A and B pins)
 Encoder ENC_FMS_INNER(43, 45);
-Encoder ENC_FMS_OUTER(44, 42);
-Encoder ENC_COM_OUTER(29, 27);
+Encoder ENC_FMS_OUTER(42, 44);
+Encoder ENC_COM_OUTER(27, 29);
 Encoder ENC_COM_INNER(26, 30);
 Encoder ENC_NAV_VOL(23, 21);
 Encoder ENC_COM_VOL(20, 22);
@@ -76,6 +76,9 @@ void setup() {
   Buttons[i++].initialize("BTN_NAV_FF", 11, 10);
   Buttons[i++].initialize("BTN_COM_FF", 10, 10);
 
+  Buttons[i++].initialize("BTN_NAV_VOL_CLICK", 17, 10);
+  Buttons[i++].initialize("BTN_COM_VOL_CLICK", 16, 10);
+  
   Buttons[i++].initialize("BTN_CDI", 69, 10);
   Buttons[i++].initialize("BTN_OBS", 33, 10);
   Buttons[i++].initialize("BTN_MSG", 35, 10);

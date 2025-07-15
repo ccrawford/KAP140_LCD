@@ -12,7 +12,7 @@ public:
   lgfx::Bus_RGB      _bus_instance;
   lgfx::Panel_ST7701 _panel_instance;
   lgfx::Touch_GT911  _touch_instance;
-  // lgfx::Light_PWM   _light_instance;
+  lgfx::Light_PWM   _light_instance;
 
   LGFX(void)
   {
@@ -113,12 +113,13 @@ public:
       _panel_instance.setTouch(&_touch_instance);
     }
 
-    // {
-    //   auto cfg = _light_instance.config();
-    //   cfg.pin_bl = GPIO_NUM_44;
-    //   _light_instance.config(cfg);
-    // }
-    // _panel_instance.light(&_light_instance);
+    {
+      auto cfg = _light_instance.config();
+      // cfg.pin_bl =   // The backlight enable is on EXIO2...not sure how to access that!
+      cfg.pwm_channel = GPIO_NUM_6;
+      _light_instance.config(cfg);
+    }
+    _panel_instance.light(&_light_instance);
 
     setPanel(&_panel_instance);
   }

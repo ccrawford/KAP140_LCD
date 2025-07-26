@@ -10,10 +10,12 @@
 #include "Button.h"
 
 using namespace admux;
-Mux muxSoft(Pin(33, INPUT_PULLUP, PinType::Digital), Pinset(41, 39, 37, 35)); //SIG pin, S0-S3 pins, enable pin NO ENABLE PIN!!
+Mux muxSoft(Pin(33, INPUT_PULLUP, PinType::Digital), Pinset(41, 39, 37, 35)); //SIG pin, S0-S3 pins, enable pin: NO ENABLE PIN!!
 
 
 // define mux names and set button status to not pressed (up to 16 inputs per mux) THE ORDER MATTERS!
+
+// The names ("BTN_NAV_FF" etc) come from the RSG CommandMapping.ini file
 
 String muxSofttxt[] = {"BTN_NAV_VOL_CLICK", "BTN_NAV_FF", "BTN_NAV_TOG", "BTN_ALT_SEL ", "BTN_SOFT_1", "BTN_SOFT_2", "BTN_SOFT_3", "BTN_SOFT_4", "BTN_SOFT_5", "BTN_SOFT_6", "BTN_SOFT_7", "BTN_SOFT_8", "BTN_SOFT_9", "BTN_SOFT_10", "BTN_SOFT_11", "BTN_SOFT_12"};
 bool muxSoftstatus[] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
@@ -59,7 +61,7 @@ Button Buttons[NUM_BUTTONS];
 #define NUM_ENCODERS 14 //total number of encoders
 RotaryHandler *Encoders[NUM_ENCODERS];
 
-// define encoders  (name, pin pair for A and B pins)
+// define encoders  (name, pin pair for A and B pins) if the direction is backwards, flip the pin pairs.
 Encoder ENC_RANGE(15,17);
 Encoder ENC_BARO(20,22);
 Encoder ENC_CRS(24,26);
@@ -104,10 +106,10 @@ void setup() {
  // init non-mux buttons
   i = 0;
   // Auto repeat buttons are the first 4
-  Buttons[i++].initialize("BTN_PAN_LEFT", 9, 10);  
-  Buttons[i++].initialize("BTN_PAN_UP", 11, 10);  
-  Buttons[i++].initialize("BTN_PAN_RIGHT", 5, 10);  
-  Buttons[i++].initialize("BTN_PAN_DN", 7, 10);
+  Buttons[i++].initialize("BTN_PAN_LEFT", 9, 10, true);  
+  Buttons[i++].initialize("BTN_PAN_UP", 11, 10, true);  
+  Buttons[i++].initialize("BTN_PAN_RIGHT", 5, 10, true);  
+  Buttons[i++].initialize("BTN_PAN_DN", 7, 10, true);
     
   Buttons[i++].initialize("BTN_FMS", 49, 10);
   Buttons[i++].initialize("BTN_MENU", 69, 10);  
@@ -167,8 +169,6 @@ void loop() {
     Buttons[i].update();
   }
   //end of non-mux button check
-
-  
  
   // check for muxSoft buttons pressed/released 
   byte dataSoft;

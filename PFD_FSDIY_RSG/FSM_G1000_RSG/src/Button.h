@@ -12,8 +12,8 @@ class Button
 {
 	public:
     Button() {};
-		Button(const String btn_name, uint8_t pin, uint16_t debounce_ms = 100);
-    void initialize(const String btn_name, uint8_t pin, uint16_t debounce_ms);
+		Button(const String btn_name, uint8_t pin, uint16_t debounce_ms = 100, bool repeat=false);
+    	void initialize(const String btn_name, uint8_t pin, uint16_t debounce_ms, bool repeat=false);
 		void begin();
 		char read();
 		bool toggled();
@@ -34,6 +34,8 @@ class Button
 		bool     _state = false;
 		uint32_t _ignore_until = 10;
 		bool     _has_changed = false;
+		bool 	_repeat =false;
+		uint16_t _pressedMs = 0;
 };
 
 #endif

@@ -7,17 +7,21 @@
 #include "Button.h"
 #include <Arduino.h>
 
-Button::Button(const String btn_name, uint8_t pin, uint16_t debounce_ms)
+#define REPEAT_DELAY_MS 500   // Feel free to change these values to suit preferences. This is the delay before repeat starts
+#define REPEAT_INTERVAL_MS 100  // and this is the delay between repeats. 
+
+Button::Button(const String btn_name, uint8_t pin, uint16_t debounce_ms, bool repeat)
 :  _name(btn_name)  
 ,  _pin(pin)
 ,  _delay(debounce_ms)
 ,  _state(HIGH)
 ,  _ignore_until(0)
 ,  _has_changed(false)
+,  _repeat(repeat)
 {
 }
 
-void Button::initialize(const String btn_name, uint8_t pin, uint16_t debounce_ms)
+void Button::initialize(const String btn_name, uint8_t pin, uint16_t debounce_ms, bool repeat)
 {
 	// Initialize class
 	this->_name = btn_name; 
@@ -26,6 +30,7 @@ void Button::initialize(const String btn_name, uint8_t pin, uint16_t debounce_ms
 	this->_state = HIGH;
 	this->_ignore_until = 0;
 	this->_has_changed = false;
+	this->_repeat = repeat;
 
 	// Call begin
 	this->begin();
@@ -81,15 +86,15 @@ bool Button::has_changed()
 // has the button gone from off -> on
 bool Button::pressed()
 {
-	if (read() == PRESSED && has_changed() == true)
+	if (read() == PRESSED && has_changed() == true) {
+		_pressedMs = millis();
 		return true;
-	else
-		return false;
+	} else return false;
 }
 
 bool Button::held()
 {
-	return (read() == PRESSED);
+	return (read() == PRESSED && ((_pressedMs + REPEAT_DELAY_MS) < millis()));
 }
 
 // has the button gone from on -> off
@@ -114,8 +119,8 @@ void Button::update()
 	} else if(pressed()) {
 		Serial.write(String(get_name() + "=1\n").c_str());
 		delay(50); //delay to avoid double click inputs
-	} else if(held()) {
-		delay(40);
+	} else if(_repeat && held()) {
+		delay(REPEAT_INTERVAL_MS);
 		Serial.write(String(get_name() + "=1\n").c_str());
 	}
 }

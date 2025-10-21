@@ -1,26 +1,27 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <RotaryEncoder.h>
+#include <AceButton.h>
 
 // Pin definitions
-#define ENCODER_PIN_A 2     // Rotary encoder pin A
-#define ENCODER_PIN_B 3     // Rotary encoder pin B
-#define ENCODER_PIN_BTN 4   // Encoder built-in button
+#define ENCODER_PIN_A 18     // Rotary encoder pin A
+#define ENCODER_PIN_B 19     // Rotary encoder pin B
+#define ENCODER_PIN_BTN 17   // Encoder built-in button
 #define EXTRA_BUTTON 16      // Second separate button
-#define LED_PIN 17           // LED pin
-#define I2C_SDA_PIN 8       // I2C SDA pin
-#define I2C_SCL_PIN 9       // I2C SCL pin
-#define INT_PIN 10          // Interrupt pin to ESP32 (connects to GPIO16 on ESP32)
+#define LED_PIN 10           // LED pin
+#define I2C_SDA_PIN 20       // I2C SDA pin
+#define I2C_SCL_PIN 21       // I2C SCL pin
+#define INT_PIN 22          // Interrupt pin to ESP32 (connects to GPIO16 on ESP32)
 
 // Channel 2
-#define ENCODER2_PIN_A 18     // Rotary encoder pin A
-#define ENCODER2_PIN_B 19     // Rotary encoder pin B
-#define ENCODER2_PIN_BTN 20   // Encoder built-in button
-#define EXTRA2_BUTTON 21      // Second separate button
-#define LED2_PIN 22           // LED pin
-#define I2C2_SDA_PIN 6       // I2C SDA pin
-#define I2C2_SCL_PIN 7       // I2C SCL pin
-#define INT2_PIN 5          // Interrupt pin to ESP32 (connects to GPIO16 on ESP32)
+#define ENCODER2_PIN_A 2     // Rotary encoder pin A
+#define ENCODER2_PIN_B 3     // Rotary encoder pin B
+#define ENCODER2_PIN_BTN 4   // Encoder built-in button
+#define EXTRA2_BUTTON 14      // Second separate button
+#define LED2_PIN 15           // LED pin
+#define I2C2_SDA_PIN 26       // I2C SDA pin
+#define I2C2_SCL_PIN 27       // I2C SCL pin
+#define INT2_PIN 28          // Interrupt pin to ESP32 (connects to GPIO16 on ESP32)
 
 
 #define I2C_SLAVE_ADDR 0x08 // I2C slave address
@@ -28,6 +29,12 @@
 
 RotaryEncoder encoder(ENCODER_PIN_A, ENCODER_PIN_B, RotaryEncoder::LatchMode::FOUR3);
 RotaryEncoder encoder2(ENCODER2_PIN_A, ENCODER2_PIN_B, RotaryEncoder::LatchMode::FOUR3);
+
+using namespace ace_button;
+AceButton pfdButton(EXTRA_BUTTON);
+
+void handleButtonEvent(AceButton*, uint8_t, uint8_t);
+
 
 void request_event();
 void receive_event(int byte_count);
@@ -61,15 +68,22 @@ unsigned long last2_transmission = 0;
 
 void setup()
 {
+  delay(5);
+  
   Serial.begin(115200);
-  // while (!Serial)
-  //   ;
+  Serial.println("G5 Pico I2C input device. OCT 2025. CAC");
 
 
   pinMode(INT_PIN, OUTPUT);
   digitalWrite(INT_PIN, HIGH);
 
-  pinMode(EXTRA_BUTTON, INPUT_PULLUP);
+//  pinMode(EXTRA_BUTTON, INPUT_PULLUP);
+
+  ButtonConfig* buttonConfig = ButtonConfig::getSystemButtonConfig();
+  buttonConfig->setEventHandler(handleButtonEvent);
+  buttonConfig->setFeature(ButtonConfig::kFeatureClick);
+  buttonConfig->setFeature(ButtonConfig::kFeatureLongPress);
+
   pinMode(ENCODER_PIN_BTN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(EXTRA_BUTTON), button_interrupt, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ENCODER_PIN_BTN), button_interrupt, CHANGE);
@@ -249,4 +263,8 @@ void button2_interrupt()
        Wire1.read();
      }
    }
+ }
+
+ void handleButtonEvent(AceButton* button, uint8_t eventType, uint8_t buttonState) {
+  
  }
